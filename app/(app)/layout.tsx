@@ -10,45 +10,45 @@ import {
   Settings2Icon,
   PiggyBankIcon,
   WalletCardsIcon,
-} from "lucide-react";
-import { headers } from "next/headers";
-import Link from "next/link";
-import Image from "next/image";
-import MultisigInput from "@/components/MultisigInput";
-import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import * as multisig from "@sqds/multisig";
-import { Toaster } from "@/components/ui/sonner";
-import ConnectWallet from "@/components/ConnectWalletButton";
-import { LucideHome, ArrowDownUp, Users, Settings } from "lucide-react";
+} from 'lucide-react';
+import { headers } from 'next/headers';
+import Link from 'next/link';
+import Image from 'next/image';
+import MultisigInput from '@/components/MultisigInput';
+import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
+import * as multisig from '@sqds/multisig';
+import { Toaster } from '@/components/ui/sonner';
+import ConnectWallet from '@/components/ConnectWalletButton';
+import { LucideHome, ArrowDownUp, Users, Settings } from 'lucide-react';
 
 const AppLayout = async ({ children }: { children: React.ReactNode }) => {
   const tabs = [
     {
-      name: "Home",
+      name: 'Home',
       icon: <LucideHome />,
-      route: "/",
+      route: '/',
     },
     {
-      name: "Transactions",
+      name: 'Transactions',
       icon: <ArrowDownUp />,
-      route: "/transactions",
+      route: '/transactions',
     },
     {
-      name: "Configuration",
+      name: 'Configuration',
       icon: <Users />,
-      route: "/config",
+      route: '/config',
     },
     {
-      name: "Settings",
+      name: 'Settings',
       icon: <Settings />,
-      route: "/settings",
+      route: '/settings',
     },
   ];
 
   const headersList = headers();
 
-  const path = headersList.get("x-pathname");
-  const multisigCookie = headersList.get("x-multisig");
+  const path = headersList.get('x-pathname');
+  const multisigCookie = headersList.get('x-multisig');
   const multisig = await isValidPublicKey(multisigCookie!);
 
   return (
@@ -61,7 +61,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
         >
           <div className="flex h-auto md:h-full flex-col overflow-y-auto justify-between md:border-r border-slate-200 px-3 py-4  bg-slate-200">
             <div>
-              {" "}
+              {' '}
               <Link href="/">
                 <div className="mb-10 flex items-center rounded-lg px-3 py-2 text-slate-900 dark:text-white">
                   <Image
@@ -69,7 +69,7 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    style={{ width: "150px", height: "auto" }}
+                    style={{ width: '150px', height: 'auto' }}
                     alt="Mercure Logo"
                   />
                 </div>
@@ -82,10 +82,10 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
                       className={`flex items-center rounded-lg px-4 py-3 text-slate-900 
                     
         ${
-          (path!.startsWith(`${tab.route}/`) && tab.route != "/") ||
+          (path!.startsWith(`${tab.route}/`) && tab.route != '/') ||
           tab.route === path
-            ? "bg-slate-400"
-            : "hover:bg-slate-400"
+            ? 'bg-slate-400'
+            : 'hover:bg-slate-400'
         }`}
                     >
                       {tab.icon}
@@ -138,8 +138,8 @@ export default AppLayout;
 const isValidPublicKey = async (multisigString: string) => {
   try {
     const multisigPubkey = new PublicKey(multisigString); // This will throw an error if the string is not a valid public key
-    const rpcUrl = headers().get("x-rpc-url");
-    const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"));
+    const rpcUrl = process.env.RPC_URL || headers().get('x-rpc-url');
+    const connection = new Connection(rpcUrl || clusterApiUrl('mainnet-beta'));
     await multisig.accounts.Multisig.fromAccountAddress(
       connection,
       multisigPubkey

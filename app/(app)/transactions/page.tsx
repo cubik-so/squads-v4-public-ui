@@ -1,6 +1,6 @@
-import * as multisig from "@sqds/multisig";
-import { headers } from "next/headers";
-import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import * as multisig from '@sqds/multisig';
+import { headers } from 'next/headers';
+import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import {
   Table,
   TableBody,
@@ -9,19 +9,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import ApproveButton from "@/components/ApproveButton";
-import ExecuteButton from "@/components/ExecuteButton";
-import RejectButton from "@/components/RejectButton";
+} from '@/components/ui/pagination';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import ApproveButton from '@/components/ApproveButton';
+import ExecuteButton from '@/components/ExecuteButton';
+import RejectButton from '@/components/RejectButton';
 
 export default async function TransactionsPage({
   params,
@@ -32,12 +32,12 @@ export default async function TransactionsPage({
 }) {
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
-  const rpcUrl = headers().get("x-rpc-url");
+  const rpcUrl = process.env.RPC_URL || headers().get('x-rpc-url');
 
-  const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"));
-  const multisigCookie = headers().get("x-multisig");
+  const connection = new Connection(rpcUrl || clusterApiUrl('mainnet-beta'));
+  const multisigCookie = headers().get('x-multisig');
   const multisigPda = new PublicKey(multisigCookie!);
-  const vaultIndex = Number(headers().get("x-vault-index"));
+  const vaultIndex = Number(headers().get('x-vault-index'));
 
   const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
     connection,
@@ -101,33 +101,33 @@ export default async function TransactionsPage({
                 <Link
                   href={createSolanaExplorerUrl(
                     transaction.transactionPda[0].toBase58(),
-                    rpcUrl || clusterApiUrl("mainnet-beta")
+                    rpcUrl || clusterApiUrl('mainnet-beta')
                   )}
                 >
                   {transaction.transactionPda[0].toBase58()}
                 </Link>
               </TableCell>
               <TableCell>
-                {transaction.proposal?.status.__kind || "None"}
+                {transaction.proposal?.status.__kind || 'None'}
               </TableCell>
               <TableCell>
                 <ApproveButton
                   rpcUrl={rpcUrl!}
                   multisigPda={multisigCookie!}
                   transactionIndex={transactionIndex}
-                  proposalStatus={transaction.proposal?.status.__kind || "None"}
+                  proposalStatus={transaction.proposal?.status.__kind || 'None'}
                 />
                 <RejectButton
                   rpcUrl={rpcUrl!}
                   multisigPda={multisigCookie!}
                   transactionIndex={transactionIndex}
-                  proposalStatus={transaction.proposal?.status.__kind || "None"}
+                  proposalStatus={transaction.proposal?.status.__kind || 'None'}
                 />
                 <ExecuteButton
                   rpcUrl={rpcUrl!}
                   multisigPda={multisigCookie!}
                   transactionIndex={transactionIndex}
-                  proposalStatus={transaction.proposal?.status.__kind || "None"}
+                  proposalStatus={transaction.proposal?.status.__kind || 'None'}
                 />
               </TableCell>
             </TableRow>
@@ -137,7 +137,7 @@ export default async function TransactionsPage({
 
       <Pagination>
         <PaginationContent>
-          {searchParams.page != "1" && (
+          {searchParams.page != '1' && (
             <PaginationItem>
               <PaginationPrevious href={`/transactions?page=${page - 1}`} />
             </PaginationItem>
@@ -152,8 +152,8 @@ export default async function TransactionsPage({
 }
 
 function createSolanaExplorerUrl(publicKey: string, rpcUrl: string): string {
-  const baseUrl = "https://explorer.solana.com/address/";
-  const clusterQuery = "?cluster=custom&customUrl=";
+  const baseUrl = 'https://explorer.solana.com/address/';
+  const clusterQuery = '?cluster=custom&customUrl=';
   const encodedRpcUrl = encodeURIComponent(rpcUrl);
 
   return `${baseUrl}${publicKey}${clusterQuery}${encodedRpcUrl}`;

@@ -1,24 +1,24 @@
-import AddMemberInput from "@/components/AddMemberInput";
-import ChangeThresholdInput from "@/components/ChangeThresholdInput";
-import ChangeUpgradeAuthorityInput from "@/components/ChangeUpgradeAuthorityInput";
-import RemoveMemberButton from "@/components/RemoveMemberButton";
+import AddMemberInput from '@/components/AddMemberInput';
+import ChangeThresholdInput from '@/components/ChangeThresholdInput';
+import ChangeUpgradeAuthorityInput from '@/components/ChangeUpgradeAuthorityInput';
+import RemoveMemberButton from '@/components/RemoveMemberButton';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import * as multisig from "@sqds/multisig";
-import { headers } from "next/headers";
+} from '@/components/ui/card';
+import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
+import * as multisig from '@sqds/multisig';
+import { headers } from 'next/headers';
 const ConfigurationPage = async () => {
-  const rpcUrl = headers().get("x-rpc-url");
+  const rpcUrl = process.env.RPC_URL || headers().get('x-rpc-url');
 
-  const connection = new Connection(rpcUrl || clusterApiUrl("mainnet-beta"));
-  const multisigCookie = headers().get("x-multisig");
+  const connection = new Connection(rpcUrl || clusterApiUrl('mainnet-beta'));
+  const multisigCookie = headers().get('x-multisig');
   const multisigPda = new PublicKey(multisigCookie!);
-  const vaultIndex = Number(headers().get("x-vault-index"));
+  const vaultIndex = Number(headers().get('x-vault-index'));
 
   const multisigInfo = await multisig.accounts.Multisig.fromAccountAddress(
     connection,
@@ -50,7 +50,7 @@ const ConfigurationPage = async () => {
                   </div>
                   <div className="ml-auto">
                     <RemoveMemberButton
-                      rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+                      rpcUrl={rpcUrl || clusterApiUrl('mainnet-beta')}
                       memberKey={member.key.toBase58()}
                       multisigPda={multisigCookie!}
                       transactionIndex={
@@ -74,7 +74,7 @@ const ConfigurationPage = async () => {
           <CardContent>
             <AddMemberInput
               multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+              rpcUrl={rpcUrl || clusterApiUrl('mainnet-beta')}
               transactionIndex={Number(multisigInfo.transactionIndex) + 1}
             />
           </CardContent>
@@ -89,7 +89,7 @@ const ConfigurationPage = async () => {
           <CardContent>
             <ChangeThresholdInput
               multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+              rpcUrl={rpcUrl || clusterApiUrl('mainnet-beta')}
               transactionIndex={Number(multisigInfo.transactionIndex) + 1}
             />
           </CardContent>
@@ -106,7 +106,7 @@ const ConfigurationPage = async () => {
           <CardContent>
             <ChangeUpgradeAuthorityInput
               multisigPda={multisigCookie!}
-              rpcUrl={rpcUrl || clusterApiUrl("mainnet-beta")}
+              rpcUrl={rpcUrl || clusterApiUrl('mainnet-beta')}
               transactionIndex={Number(multisigInfo.transactionIndex) + 1}
               vaultIndex={vaultIndex}
             />
